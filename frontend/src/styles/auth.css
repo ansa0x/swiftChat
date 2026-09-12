@@ -1,0 +1,461 @@
+/* Auth pages: split-screen, Paper left / Ink right. */
+
+:root {
+  --paper: #faf8f4;
+  --ink: #141b2d;
+  /* Panel sits lighter than --ink so the artwork's dark navy phones and hair
+     keep contrast; --ink stays the form side's text colour. */
+  --panel: #2e3a5f;
+  --signal: #3d5afe;
+  --ember: #ff6b47;
+  --text: #1c2333;
+  --text-muted: #5f6675;
+  --line: #e3ded4;
+  --font-display: "Space Grotesk", "Inter", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, -apple-system, sans-serif;
+}
+
+/* Scoped rather than global so the chat UI's existing metrics are untouched.
+   Without this, inputs render content-box and overhang the form by their
+   padding + border. */
+.auth-shell,
+.auth-shell *,
+.auth-shell *::before,
+.auth-shell *::after {
+  box-sizing: border-box;
+}
+
+.auth-shell {
+  display: grid;
+  grid-template-columns: 1fr;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--paper);
+  color: var(--text);
+  font-family: var(--font-body);
+  text-align: left;
+}
+
+/* ---------- Left: form ---------- */
+
+.auth-form-side {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 3rem 1.5rem;
+}
+
+.auth-form-inner {
+  width: 100%;
+  max-width: 24rem;
+  margin: 0 auto;
+}
+
+.auth-eyebrow {
+  display: block;
+  margin-bottom: 2.25rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.auth-form-inner h1 {
+  margin: 0 0 0.4rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.9rem;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.auth-sub {
+  margin: 0 0 2rem;
+  color: var(--text-muted);
+  font-size: 0.94rem;
+  line-height: 1.5;
+}
+
+.auth-field {
+  margin-bottom: 1.15rem;
+}
+
+.auth-field label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.auth-field input {
+  width: 100%;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  background: #fff;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.auth-field input::placeholder {
+  color: #a8a79f;
+}
+
+/* Ember is reserved for exactly one accent: the focused field. Paired with
+   :focus-within because :focus stops matching while the window itself is
+   unfocused, which would drop the accent when switching apps mid-form. */
+.auth-field input:focus,
+.auth-field:focus-within input {
+  outline: none;
+  border-color: var(--ember);
+  box-shadow: 0 0 0 3px rgba(255, 107, 71, 0.16);
+}
+
+.auth-field input[aria-invalid="true"] {
+  border-color: #c0392b;
+}
+
+.auth-field input:disabled {
+  background: #f4f2ed;
+  color: var(--text-muted);
+}
+
+.auth-shell .auth-field-error,
+.auth-shell .auth-hint {
+  margin: 0.35rem 0 0;
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.auth-shell .auth-field-error {
+  color: #c0392b;
+}
+
+.auth-shell .auth-hint {
+  color: var(--text-muted);
+}
+
+.auth-shell .auth-error {
+  margin: 0 0 1.15rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #f0c8bf;
+  border-radius: 0.5rem;
+  background: #fdf0ec;
+  color: #a33322;
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+.auth-submit {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 0;
+  border-radius: 0.5rem;
+  background: var(--signal);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.auth-submit:hover:not(:disabled) {
+  background: #3450e8;
+}
+
+.auth-submit:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.auth-submit:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.auth-shell .auth-switch {
+  margin: 1.5rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+}
+
+.auth-shell .auth-switch a {
+  color: var(--ink);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.auth-shell .auth-switch a:hover {
+  color: var(--signal);
+}
+
+/* ---------- Right: Ink panel ---------- */
+
+.auth-panel-side {
+  position: relative;
+  display: none;
+  overflow: hidden;
+  background: var(--panel);
+}
+
+.auth-visual {
+  position: absolute;
+  inset: 0;
+}
+
+/* Two stacked layers: ambient constellation behind, illustration in front. */
+.auth-stars {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.9;
+}
+
+/* Light sparkles, kept small so they read as ambient texture rather than dots
+   competing with the artwork. Twinkle is opacity-only on purpose: a CSS
+   transform here would override each star's positioning attribute and stack
+   them all at the origin. */
+.star {
+  fill: #ffffff;
+  animation: twinkle 5s ease-in-out infinite;
+}
+
+.star-lit {
+  animation-duration: 3.6s;
+  animation-delay: -1.2s;
+}
+
+.star-soft {
+  animation-duration: 6.8s;
+  animation-delay: -2.8s;
+}
+
+/* Each star cycles from near-black — where it sinks into the panel — up to
+   full white, so the field reads as twinkling rather than pulsing. */
+@keyframes twinkle {
+  0%,
+  100% {
+    fill: #0a1020;
+  }
+  50% {
+    fill: #ffffff;
+  }
+}
+
+/* Each cluster drifts as a unit, so the field never looks gridded. */
+.node-group {
+  animation: drift 18s ease-in-out infinite;
+}
+
+.group-b {
+  animation-duration: 23s;
+  animation-delay: -6s;
+}
+
+.group-c {
+  animation-duration: 20s;
+  animation-delay: -11s;
+}
+
+.group-d {
+  animation-duration: 27s;
+  animation-delay: -4s;
+}
+
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(10px, -12px);
+  }
+}
+
+.auth-illo {
+  position: absolute;
+  /* Inset leaves the wordmark clear at the bottom of the panel. */
+  inset: 5% 8% 15%;
+}
+
+/* One sprite per figure / bubble / arc, each bobbing on its own timing. */
+/* Soft light behind each figure so dark phones and hair stay legible on Ink. */
+.illo-halo {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  transform: scale(1.35);
+  filter: blur(10px);
+  animation-name: piece-bob;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+.illo-piece {
+  position: absolute;
+  display: block;
+  background-position: center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  animation-name: piece-bob;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+@keyframes piece-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+/* Routes sit above the sprites, sharing their coordinate space. */
+.illo-routes {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.route {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.16);
+  stroke-width: 2;
+  stroke-dasharray: 5 9;
+  stroke-linecap: round;
+}
+
+.msg-dot {
+  fill: #ffffff;
+  offset-distance: 0%;
+  opacity: 0;
+}
+
+/* offset-path drives the dot along the same curve the route draws. */
+.msg-dot-a {
+  offset-path: path("M 196 168 C 268 196, 330 268, 372 366");
+  animation: send-message 4.6s ease-in-out infinite;
+}
+
+.msg-dot-b {
+  offset-path: path("M 366 424 C 320 512, 268 548, 214 556");
+  animation: send-message 5.4s ease-in-out infinite 2.3s;
+}
+
+@keyframes send-message {
+  0% {
+    offset-distance: 0%;
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    offset-distance: 100%;
+    opacity: 0;
+  }
+}
+
+.auth-panel-copy {
+  position: absolute;
+  left: 3rem;
+  bottom: 3rem;
+  right: 3rem;
+  color: #e8eaf0;
+}
+
+.auth-wordmark {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.35rem;
+  letter-spacing: -0.02em;
+}
+
+.auth-panel-copy p {
+  margin: 0;
+  max-width: 20rem;
+  color: #9aa3bb;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (min-width: 860px) {
+  .auth-shell {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .auth-form-side {
+    padding: 4rem 3.5rem;
+    justify-content: center;
+  }
+
+  .auth-form-inner {
+    margin: 0;
+  }
+
+  .auth-panel-side {
+    display: block;
+  }
+}
+
+@media (min-width: 1200px) {
+  .auth-shell {
+    grid-template-columns: 0.95fr 1.05fr;
+  }
+
+  .auth-form-side {
+    padding: 4rem 5rem;
+  }
+}
+
+/* ---------- Motion preferences ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .node-group,
+  .star,
+  .star-lit,
+  .star-soft,
+  .illo-halo,
+  .illo-piece,
+  .msg-dot,
+  .msg-dot-a,
+  .msg-dot-b {
+    animation: none !important;
+  }
+
+  /* The dot only exists while travelling; park it out of sight when it can't. */
+  .msg-dot {
+    display: none;
+  }
+
+  /* Frozen mid-cycle would look arbitrary; settle on a steady light fill. */
+  .star {
+    fill: #c9d4f0;
+  }
+
+  .auth-field input,
+  .auth-submit {
+    transition: none;
+  }
+}

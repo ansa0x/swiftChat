@@ -1,0 +1,13 @@
+node_modules/
+.env
+*.log
+.DS_Store
+
+# Local editor / tooling config
+.claude/
+
+# Master artwork kept locally only. The auth panel renders from the derived
+# sprites in frontend/src/assets/illo/, which are committed.
+frontend/src/assets/auth-illustration.png
+frontend/src/assets/auth_illustration.png
+frontend/src/assets/auth-illustration-panel.png

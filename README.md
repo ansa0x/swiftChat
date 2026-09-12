@@ -48,11 +48,3 @@ Integration test (creates its own users and cleans up after itself):
 ```bash
 npm run test:sockets
 ```
-
-## Before deploy
-
-These three are fine for local development but will break or silently misbehave in production. Address them before going live on Render.
-
-1. **Rate limiter uses an in-memory store.** Counts reset on every restart and are per-process, so running multiple instances multiplies the effective limit — swap in a shared store (`rate-limit-redis`) before scaling past one instance.
-2. **Socket.IO presence map is in-process.** Each instance only knows its own connections, so users on different instances can't see or message each other — add `@socket.io/redis-adapter` before scaling past one instance.
-3. **`trust proxy` is not set.** Behind Render's proxy every request appears to come from the proxy's IP, so all users share one rate-limit bucket — set `app.set("trust proxy", 1)` in `backend/src/index.js`, matching the actual number of proxy hops (never blanket `true`, which lets clients spoof `X-Forwarded-For` and bypass the limit).

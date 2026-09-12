@@ -21,6 +21,28 @@ const app = express();
 const server = http.createServer(app);
 const PORT = process.env.PORT || 5000;
 
+/**
+ * Behind a proxy, req.ip is the proxy's address unless Express is told how many
+ * hops to trust — which would put every user in one rate-limit bucket.
+ *
+ * Deliberately off in development: with it on, anyone could set their own
+ * X-Forwarded-For and be treated as a fresh IP on every request, sidestepping
+ * the auth rate limits entirely. Never `true` for the same reason — trust an
+ * exact hop count (Render terminates at one) so only that hop can set the
+ * forwarded address.
+ *
+ * TRUST_PROXY overrides the count for hosts that sit behind more than one.
+ */
+const configuredHops = Number.parseInt(process.env.TRUST_PROXY ?? "", 10);
+
+if (Number.isInteger(configuredHops) && configuredHops > 0) {
+  app.set("trust proxy", configuredHops);
+  console.log(`Trusting ${configuredHops} proxy hop(s) (TRUST_PROXY).`);
+} else if (process.env.NODE_ENV === "production") {
+  app.set("trust proxy", 1);
+  console.log("Trusting 1 proxy hop (production).");
+}
+
 initSocketServer(server);
 
 app.use(express.json());

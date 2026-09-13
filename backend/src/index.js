@@ -8,6 +8,7 @@ import express from "express";
 import cors from "cors";
 
 import { connectDB } from "./lib/db.js";
+import { allowedOrigins } from "./lib/allowedOrigins.js";
 import authRoutes from "./routes/authRoutes.js";
 import groupRoutes from "./routes/groupRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
@@ -46,7 +47,7 @@ if (Number.isInteger(configuredHops) && configuredHops > 0) {
 initSocketServer(server);
 
 app.use(express.json());
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+app.use(cors({ origin: allowedOrigins, credentials: true }));
 
 app.get("/api/health", (req, res) => {
   res.status(200).json({ status: "ok", service: "SwiftChat API" });

@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import Message from "../models/Message.js";
 import Group from "../models/Group.js";
 import User from "../models/User.js";
+import { allowedOrigins } from "../lib/allowedOrigins.js";
 import { notifyUsers } from "../lib/notify.js";
 import {
   setIo,
@@ -85,7 +86,7 @@ const authenticateSocket = async (socket, next) => {
 
 export const initSocketServer = (httpServer) => {
   const io = new Server(httpServer, {
-    cors: { origin: "http://localhost:5173", credentials: true },
+    cors: { origin: allowedOrigins, credentials: true },
   });
 
   setIo(io);

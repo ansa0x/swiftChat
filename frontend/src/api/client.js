@@ -1,6 +1,18 @@
 import axios from "axios";
 
-export const API_BASE_URL = "http://localhost:5000/api";
+/**
+ * Origin of the backend, e.g. https://swiftchat-api.onrender.com.
+ *
+ * VITE_API_URL holds the origin only, with no /api suffix, because the socket
+ * connection needs the bare origin while REST calls need the prefix. Trailing
+ * slashes are trimmed so a value like "http://host:5000/" doesn't produce a
+ * double slash.
+ */
+export const API_ORIGIN = (
+  import.meta.env.VITE_API_URL ?? "http://localhost:5000"
+).replace(/\/+$/, "");
+
+export const API_BASE_URL = `${API_ORIGIN}/api`;
 export const TOKEN_STORAGE_KEY = "swiftchat_token";
 export const USER_STORAGE_KEY = "swiftchat_user";
 

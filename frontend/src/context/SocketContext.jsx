@@ -2,8 +2,12 @@ import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { io } from "socket.io-client";
 
 import { useAuth } from "./AuthContext.jsx";
+import { API_ORIGIN } from "../api/client.js";
 
-export const SOCKET_URL = "http://localhost:5000";
+// Same VITE_API_URL as the REST client, but the bare origin — Socket.IO
+// connects to the host, not to /api. Imported rather than re-read from the
+// environment so the two can't drift apart.
+export const SOCKET_URL = API_ORIGIN;
 
 const SocketContext = createContext(null);
 

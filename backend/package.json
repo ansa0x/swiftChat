@@ -18,6 +18,9 @@
     "express"
   ],
   "license": "ISC",
+  "engines": {
+    "node": "22.x"
+  },
   "dependencies": {
     "bcrypt": "^6.0.0",
     "cloudinary": "^2.5.1",
